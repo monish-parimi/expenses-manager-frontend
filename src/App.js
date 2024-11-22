@@ -3,11 +3,16 @@ import axios from "axios";
 import { Pie } from "react-chartjs-2";
 import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
 import { FaMicrophone } from "react-icons/fa";
+import Penny from './Penny.png';
+import ParimiMonishImage from './Parimi_Monish_Passport_Image_Main.jpg';
+import Mehenaaz from './Mehenaaz.jpg';
+import Yaswanth from './Yaswanth.jpg';
+import Venu from './Venu.jpg';
 
 Chart.register(ArcElement, Tooltip, Legend);
 
 export default function App() {
-  const [selectedPage, setSelectedPage] = useState("dashboard");
+  const [selectedPage, setSelectedPage] = useState("Add Income / Expenses");
   const [category, setCategory] = useState("");
   const [amount, setAmount] = useState("");
   const [category_type, setCategoryType] = useState("Expenses");
@@ -122,19 +127,19 @@ export default function App() {
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.lang = "en-US";
     recognition.interimResults = false;
-  
+
     recognition.onstart = () => setIsListening(true);
     recognition.onend = () => setIsListening(false);
-  
+
     recognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript;
       const words = transcript.split(" ");
-  
+
       if (words.length >= 3) {
         const categoryTypeInput = words.shift().toLowerCase();
         const lastWord = parseFloat(words.pop());
         const categoryInput = words.join(" ");
-  
+
         const validCategoryTypes = ["income", "expenses"];
         if (validCategoryTypes.includes(categoryTypeInput)) {
           setCategoryType(categoryTypeInput === "income" ? "Income" : "Expenses");
@@ -201,9 +206,9 @@ export default function App() {
   return (
     <div style={layoutStyles}>
       <aside style={sidebarStyles}>
-        <h1 style={headingStyles}>Penny - The Expense Manager</h1>
+        <img src={Penny} style={{ height: '80px', width: '200px' }}></img>
         <nav>
-          {["dashboard", "analytics", "prediction"].map((page) => (
+          {["Add Income / Expenses", "analytics", "prediction", "Meet The Team"].map((page) => (
             <button
               key={page}
               onClick={() => setSelectedPage(page)}
@@ -218,112 +223,111 @@ export default function App() {
         </nav>
       </aside>
 
-      {/* Main Content */}
-      <main style={mainContentStyles}>
-  {selectedPage === "dashboard" && (
-    <div style={cardStyles}>
-      <h2 style={cardHeaderStyles}>Dashboard</h2>
-      <div style={cardContentStyles}>
-        <form style={formStyles}>
-          <select
-            value={category_type}
-            onChange={(e) => setCategoryType(e.target.value)}
-            style={inputStyles}
-          >
-            <option value="Expenses">Expenses</option>
-            <option value="Income">Income</option>
-          </select>
-          <input
-            type="text"
-            placeholder="Category"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            style={inputStyles}
-          />
-          <input
-            type="number"
-            placeholder="Amount"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            style={inputStyles}
-          />
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            style={inputStyles}
-          />
-          <button style={submitButtonStyles} onClick={handleAddExpense}>
-            Add {category_type}
-          </button>
-        </form>
-        <div style={micButtonContainer}>
-        <div style={waveStyles}></div>
-        <button onClick={handleVoiceInput} style={micButtonStyles}>
-          <FaMicrophone />
-        </button>
-      </div>
-      </div>
-    </div>
-  )}
-
-{selectedPage === "analytics" && (
-  <>
-    {/* Analytics and View Expenses/Income Cards Side by Side */}
-    <div style={{ display: 'flex', gap: '20px', alignItems: 'center', flex: '1'}}>
-      {/* Analytics Card */}
-      <div style={{ ...cardStyles, flex: '1' }}>
-        <h2 style={cardHeaderStyles}>Analytics</h2>
-        <div style={{ ...cardContentStyles, textAlign: 'center' }}>
-          {chartData.labels ? (
-            <div style={{ width: '200px', height: '200px', margin: '0 auto' }}>
-              <Pie data={chartData} options={{ maintainAspectRatio: false }} />
-            </div>
-          ) : (
-            <p>No data available for analytics.</p>
-          )}
-        </div>
-      </div>
-
-      {/* View Expenses/Income Card */}
-      <div style={{ ...cardStyles, flex: '1', overflowY: 'auto', maxHeight: '500px' }}>
-        <h2 style={cardHeaderStyles}>VIEW INCOME / EXPENSES</h2>
-        <div style={cardContentStyles}>
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            style={inputStyles}
-          />
-          <h3>Expenses on {selectedDate}</h3>
-          <ul>
-            {expenses.map((expense) => (
-              <li key={expense.id}>
-                {expense.category} - ${parseFloat(expense.amount).toFixed(2)} -{" "}
-                {new Date(expense.date).toLocaleDateString()}
-                <button onClick={() => handleDeleteExpense(expense.id)} style={button}>
-                  Delete
+      <main style={{ ...mainContentStyles, overflowY: 'auto' }}>
+        {selectedPage === "Add Income / Expenses" && (
+          <div style={cardStyles}>
+            <h2 style={cardHeaderStyles}>ADD INCOME / EXPENSES</h2>
+            <div style={cardContentStyles}>
+              <form style={formStyles}>
+                <select
+                  value={category_type}
+                  onChange={(e) => setCategoryType(e.target.value)}
+                  style={inputStyles}
+                >
+                  <option value="Expenses">Expenses</option>
+                  <option value="Income">Income</option>
+                </select>
+                <input
+                  type="text"
+                  placeholder="Enter Category e.g.(Groceries or Salary)"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  style={inputStyles}
+                />
+                <input
+                  type="number"
+                  placeholder="Enter Amount e.g.(100 or 3000)"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  style={inputStyles}
+                />
+                <input
+                  type="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  style={inputStyles}
+                />
+                <button style={submitButtonStyles} onClick={handleAddExpense}>
+                  Add {category_type}
                 </button>
-              </li>
-            ))}
-          </ul>
-          <p>
-            Total Expenses for {selectedDate}: $
-            {parseFloat(totalDayExpense || 0).toFixed(2)}
-          </p>
-          <p>
-            Total Expenses for {selectedDate.slice(0, 7)}: $
-            {parseFloat(totalMonthExpense || 0).toFixed(2)}
-          </p>
-        </div>
-      </div>
-    </div>
-  </>
-)}
+              </form>
+              <div style={micButtonContainer}>
+                <div style={waveStyles}></div>
+                <button onClick={handleVoiceInput} style={micButtonStyles}>
+                  <FaMicrophone />
+                </button>
+              </div>
+              <p style={{ textAlign: 'center' }}>Try Saying "Income Salary 5000" or "Expenses Groceries 400"</p>
+            </div>
+          </div>
+        )}
+
+        {selectedPage === "analytics" && (
+          <>
+            <div style={{ display: 'flex', flexDirection: 'row', width: '100%', height: '100%' }}>
+              <div style={{ display: 'flex', gap: '20px', alignItems: 'center', flex: '1' }}>
+                <div style={{ ...cardStyles, flex: '1' }}>
+                  <h2 style={cardHeaderStyles}> EXPENSE ANALYTICS</h2>
+                  <div style={{ ...cardContentStyles, textAlign: 'center', width: '100%' }}>
+                    {chartData.labels ? (
+                      <div style={{ width: '250px', height: '250px', margin: '0 auto' }}>
+                        <Pie data={chartData} options={{ maintainAspectRatio: false }} />
+                      </div>
+                    ) : (
+                      <p>No data available for analytics.</p>
+                    )}
+                  </div>
+                </div>
+
+                <div style={{ ...cardStyles, flex: '1', overflowY: 'auto' }}>
+                  <h2 style={cardHeaderStyles}>VIEW EXPENSES</h2>
+                  <div style={cardContentStyles}>
+                    <label htmlFor="dateInput" style={{ marginRight: '10px' }}>SELECT DATE : </label>
+                    <input
+                      id="dateInput"
+                      type="date"
+                      value={selectedDate}
+                      onChange={(e) => setSelectedDate(e.target.value)}
+                      style={inputStyles}
+                    />
+                    <h3>EXPENSES ON {selectedDate}</h3>
+                    <ul style={{ maxHeight: 'calc(5 * 3em)', overflowY: 'auto', padding: '0', margin: '0', listStyleType: 'none' }}>
+                      {expenses.map((expense) => (
+                        <li key={expense.id} style={{ padding: '0.5em 0', borderBottom: '1px solid #ddd' }}>
+                          {expense.category} - ₹{parseFloat(expense.amount).toFixed(2)} -{" "}
+                          {new Date(expense.date).toLocaleDateString()}
+                          <button onClick={() => handleDeleteExpense(expense.id)} style={button}>Delete</button>
+                        </li>
+                      ))}
+                    </ul>
+                    <p>
+                      Total Expenses for {selectedDate}: ₹
+                      {parseFloat(totalDayExpense || 0).toFixed(2)}
+                    </p>
+                    <p>
+                      Total Expenses for {selectedDate.slice(0, 7)}: ₹
+                      {parseFloat(totalMonthExpense || 0).toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
 
         {selectedPage === "prediction" && (
           <div style={cardStyles}>
-            <h2 style={cardHeaderStyles}>Prediction</h2>
+            <h2 style={cardHeaderStyles}>PREDICTION</h2>
             <div style={cardContentStyles}>
               <button style={submitButtonStyles} onClick={handlePredictExpenses}>
                 Predict Next Month's Expenses
@@ -337,6 +341,87 @@ export default function App() {
             </div>
           </div>
         )}
+
+        {selectedPage === "Meet The Team" && (
+          <>
+            <div style={{ ...cardStyles, width: '600px' }}>
+              <h1 style={{ textAlign: 'center', fontWeight: 'bold', fontFamily: 'Poppins, sans-serif' }}>MEET THE TEAM</h1>
+            </div>
+
+            <br></br>
+
+            <div style={{ ...cardStyles, display: 'flex', alignItems: 'center', height: '160px', width: '500px' }}>
+
+              <img
+                src={Mehenaaz}
+                alt="Mehenaaz"
+                style={{ width: '100px', height: '100px', borderRadius: '50%', marginRight: '90px', marginLeft: '30px', marginTop: '10px', marginBottom: '10px' }}
+              />
+              <div>
+                <h2 style={{ textAlign: 'center', fontWeight: 'bold', fontFamily: 'Poppins, sans-serif' }}>
+                  Shaik Mehenaaz
+                </h2>
+                <p style={{ textAlign: 'center', fontFamily: 'Poppins, sans-serif' }}>Backend Developer</p>
+                <p style={{ textAlign: 'center', fontFamily: 'Poppins, sans-serif' }}>MySQL Database Engineer</p>
+              </div>
+            </div>
+
+            <br></br>
+
+            <div style={{ ...cardStyles, display: 'flex', alignItems: 'center', height: '160px', width: '500px' }}>
+
+              <img
+                src={Venu}
+                alt="Venu Charan"
+                style={{ width: '100px', height: '100px', borderRadius: '50%', marginRight: '90px', marginLeft: '30px', marginTop: '10px', marginBottom: '10px' }}
+              />
+              <div>
+                <h2 style={{ textAlign: 'center', fontWeight: 'bold', fontFamily: 'Poppins, sans-serif' }}>
+                  Guntaka Venu Charan Reddy
+                </h2>
+                <p style={{ textAlign: 'center', fontFamily: 'Poppins, sans-serif' }}>Full Stack Developer</p>
+                <p style={{ textAlign: 'center', fontFamily: 'Poppins, sans-serif' }}>AI/ML Engineer</p>
+              </div>
+            </div>
+
+            <br></br>
+
+            <div style={{ ...cardStyles, display: 'flex', alignItems: 'center', height: '160px', width: '500px' }}>
+
+              <img
+                src={Yaswanth}
+                alt="Yaswanth"
+                style={{ width: '100px', height: '100px', borderRadius: '50%', marginRight: '90px', marginLeft: '30px', marginTop: '10px', marginBottom: '10px' }}
+              />
+              <div>
+                <h2 style={{ textAlign: 'center', fontWeight: 'bold', fontFamily: 'Poppins, sans-serif' }}>
+                  Chinthala Yaswanth
+                </h2>
+                <p style={{ textAlign: 'center', fontFamily: 'Poppins, sans-serif' }}>Frontend Developer</p>
+                <p style={{ textAlign: 'center', fontFamily: 'Poppins, sans-serif' }}>ML Engineer</p>
+              </div>
+            </div>
+
+            <br></br>
+
+            <div style={{ ...cardStyles, display: 'flex', alignItems: 'center', height: '160px', width: '500px' }}>
+
+              <img
+                src={ParimiMonishImage}
+                alt="Parimi Monish"
+                style={{ width: '100px', height: '100px', borderRadius: '50%', marginRight: '90px', marginLeft: '30px', marginTop: '10px', marginBottom: '10px' }}
+              />
+              <div >
+                <h2 style={{ textAlign: 'center', fontWeight: 'bold', fontFamily: 'Poppins, sans-serif' }}>
+                  Parimi Monish
+                </h2>
+                <p style={{ textAlign: 'center', fontFamily: 'Poppins, sans-serif' }}>Frontend Developer</p>
+                <p style={{ textAlign: 'center', fontFamily: 'Poppins, sans-serif' }}>MySQL Database Engineer</p>
+              </div>
+            </div>
+          </>
+        )}
+
       </main>
     </div>
   );
@@ -349,7 +434,7 @@ const layoutStyles = {
 };
 
 const sidebarStyles = {
-  width: "16rem",
+  width: "14rem",
   height: "100vh",
   backgroundColor: "#2d3748",
   color: "#fff",
@@ -358,11 +443,6 @@ const sidebarStyles = {
   flexDirection: "column",
   gap: "1rem",
   position: "fixed",
-};
-
-const headingStyles = {
-  fontSize: "1.5rem",
-  fontWeight: "bold",
 };
 
 const buttonStyles = {
@@ -376,12 +456,13 @@ const buttonStyles = {
 };
 
 const button = {
-  width: "80%",
-  textAlign: "left",
+  width: "20%",
+  textAlign: "center",
   padding: "0.75rem",
+  margin: "1rem",
   borderRadius: "0.5rem",
   border: "none",
-  color: "#fff",
+  color: "#FF0000",
   cursor: "pointer",
 };
 
