@@ -67,6 +67,21 @@ export default function App() {
             "#98FB98",
             "#FFD700",
             "#FF69B4",
+            "#6A5ACD",
+            "#00CED1",
+            "#FF6347",
+            "#40E0D0",
+            "#7FFFD4",
+            "#8A2BE2",
+            "#FF4500",
+            "#DDA0DD",
+            "#00FA9A",
+            "#FFDAB9",
+            "#FF7F50",
+            "#4682B4",
+            "#BA55D3",
+            "#708090",
+            "#FFE4B5"
           ],
         },
       ],
@@ -88,11 +103,11 @@ export default function App() {
       });
       setCategory("");
       setAmount("");
-      alert("Expense added successfully!");
+      alert("Added successfully!");
       fetchExpensesByDate(date);
     } catch (error) {
       console.error(
-        "Error adding expense:",
+        "Error adding items:",
         error.response ? error.response.data : error.message
       );
     }
@@ -101,11 +116,11 @@ export default function App() {
   const handleDeleteExpense = async (id) => {
     try {
       await axios.delete(`http://localhost:8000/delete-expense/${id}/`);
-      alert("Expense deleted successfully!");
+      alert("Successfully Deleted!");
       fetchExpensesByDate(selectedDate);
     } catch (error) {
       console.error(
-        "Error deleting expense:",
+        "Error deleting items:",
         error.response ? error.response.data : error.message
       );
     }
@@ -121,7 +136,6 @@ export default function App() {
       console.error("Error predicting expenses:", error);
     }
   };
-
 
   const handleVoiceInput = () => {
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
@@ -223,93 +237,131 @@ export default function App() {
         </nav>
       </aside>
 
-      <main style={{ ...mainContentStyles, overflowY: 'auto' }}>
+      <main style={{ ...mainContentStyles, overflowY: "auto" }}>
         {selectedPage === "Add Income / Expenses" && (
-          <div style={cardStyles}>
-            <h2 style={cardHeaderStyles}>ADD INCOME / EXPENSES</h2>
+          <div style={{ ...cardStyles, padding: "20px" }}>
+            <h2 style={{ ...cardHeaderStyles, textAlign: "center", marginBottom: "20px" }}>
+              Add Income / Expenses
+            </h2>
             <div style={cardContentStyles}>
-              <form style={formStyles}>
+              <form onSubmit={handleAddExpense} style={formStyles}>
                 <select
                   value={category_type}
                   onChange={(e) => setCategoryType(e.target.value)}
-                  style={inputStyles}
+                  style={{ ...inputStyles, marginBottom: "15px" }}
                 >
                   <option value="Expenses">Expenses</option>
                   <option value="Income">Income</option>
                 </select>
+
                 <input
                   type="text"
-                  placeholder="Enter Category e.g.(Groceries or Salary)"
+                  placeholder="Enter Category (e.g., Groceries or Salary)"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  style={inputStyles}
+                  style={{ ...inputStyles, marginBottom: "15px" }}
                 />
+
                 <input
                   type="number"
-                  placeholder="Enter Amount e.g.(100 or 3000)"
+                  placeholder="Enter Amount (e.g., 100 or 3000)"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
-                  style={inputStyles}
+                  style={{ ...inputStyles, marginBottom: "15px" }}
                 />
+
                 <input
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  style={inputStyles}
+                  style={{ ...inputStyles, marginBottom: "15px" }}
                 />
-                <button style={submitButtonStyles} onClick={handleAddExpense}>
+
+                <button type="submit" style={submitButtonStyles}>
                   Add {category_type}
                 </button>
               </form>
+
               <div style={micButtonContainer}>
                 <div style={waveStyles}></div>
                 <button onClick={handleVoiceInput} style={micButtonStyles}>
                   <FaMicrophone />
                 </button>
               </div>
-              <p style={{ textAlign: 'center' }}>Try Saying "Income Salary 5000" or "Expenses Groceries 400"</p>
+
+              <p style={{ textAlign: "center", color: "#555", marginTop: "10px" }}>
+                Try Saying "Income Salary 5000" or "Expenses Groceries 400"
+              </p>
             </div>
           </div>
         )}
 
         {selectedPage === "analytics" && (
-          <>
-            <div style={{ display: 'flex', flexDirection: 'row', width: '100%', height: '100%' }}>
-              <div style={{ display: 'flex', gap: '20px', alignItems: 'center', flex: '1' }}>
-                <div style={{ ...cardStyles, flex: '1' }}>
-                  <h2 style={cardHeaderStyles}> EXPENSE ANALYTICS</h2>
-                  <div style={{ ...cardContentStyles, textAlign: 'center', width: '100%' }}>
-                    {chartData.labels ? (
-                      <div style={{ width: '250px', height: '250px', margin: '0 auto' }}>
-                        <Pie data={chartData} options={{ maintainAspectRatio: false }} />
-                      </div>
-                    ) : (
-                      <p>No data available for analytics.</p>
-                    )}
-                  </div>
-                </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "20px", padding: "20px" }}>
+            <div style={{ display: "flex", flexDirection: "row", gap: "20px", justifyContent: "space-between" }}>
 
-                <div style={{ ...cardStyles, flex: '1', overflowY: 'auto' }}>
-                  <h2 style={cardHeaderStyles}>VIEW EXPENSES</h2>
-                  <div style={cardContentStyles}>
-                    <label htmlFor="dateInput" style={{ marginRight: '10px' }}>SELECT DATE : </label>
-                    <input
-                      id="dateInput"
-                      type="date"
-                      value={selectedDate}
-                      onChange={(e) => setSelectedDate(e.target.value)}
-                      style={inputStyles}
-                    />
-                    <h3>EXPENSES ON {selectedDate}</h3>
-                    <ul style={{ maxHeight: 'calc(5 * 3em)', overflowY: 'auto', padding: '0', margin: '0', listStyleType: 'none' }}>
-                      {expenses.map((expense) => (
-                        <li key={expense.id} style={{ padding: '0.5em 0', borderBottom: '1px solid #ddd' }}>
-                          {expense.category} - ₹{parseFloat(expense.amount).toFixed(2)} -{" "}
-                          {new Date(expense.date).toLocaleDateString()}
-                          <button onClick={() => handleDeleteExpense(expense.id)} style={button}>Delete</button>
+              <div style={{ ...cardStyles, flex: "1", display: "flex", flexDirection: "column", padding: "20px" }}>
+                <h2 style={cardHeaderStyles}>Expense Analytics</h2>
+                <div style={{ ...cardContentStyles, textAlign: "center", flex: 1 }}>
+                  {chartData.labels ? (
+                    <div style={{ width: "100%", height: "300px", margin: "0 auto" }}>
+                      <Pie data={chartData} options={{ maintainAspectRatio: false }} />
+                    </div>
+                  ) : (
+                    <p style={{ color: "#888" }}>No data available for analytics.</p>
+                  )}
+                </div>
+              </div>
+
+              <div style={{ ...cardStyles, flex: "1", display: "flex", flexDirection: "column", padding: "20px", overflowY: "auto" }}>
+                <h2 style={cardHeaderStyles}>View Expenses</h2>
+                <div style={cardContentStyles}>
+                  <label htmlFor="dateInput" style={{ marginRight: "10px", fontWeight: "bold" }}>
+                    Select Date:
+                  </label>
+                  <input
+                    id="dateInput"
+                    type="date"
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                    style={inputStyles}
+                  />
+                  <h3 style={{ marginTop: "20px" }}>Expenses on {selectedDate}</h3>
+
+                  <ul
+                    style={{
+                      maxHeight: "calc(5 * 3em)",
+                      overflowY: "auto",
+                      padding: "0",
+                      margin: "20px 0",
+                      listStyleType: "none",
+                      borderBottom: "1px solid #ddd",
+                    }}
+                  >
+                    {expenses.length === 0 ? (
+                      <p style={{ color: "#888" }}>No expenses recorded for this date.</p>
+                    ) : (
+                      expenses.map((expense) => (
+                        <li key={expense.id} style={{ padding: "0.5em 0", borderBottom: "1px solid #ddd" }}>
+                          <span>{expense.category} - ₹{parseFloat(expense.amount).toFixed(2)} - </span>
+                          <span>{new Date(expense.date).toLocaleDateString()}</span>
+                          <button
+                            onClick={() => handleDeleteExpense(expense.id)}
+                            style={{
+                              ...button,
+                              marginLeft: "10px",
+                              backgroundColor: "#e74c3c",
+                              color: "#fff",
+                            }}
+                          >
+                            Delete
+                          </button>
                         </li>
-                      ))}
-                    </ul>
+                      ))
+                    )}
+                  </ul>
+
+                  <div style={{ marginTop: "20px" }}>
                     <p>
                       Total Expenses for {selectedDate}: ₹
                       {parseFloat(totalDayExpense || 0).toFixed(2)}
@@ -322,22 +374,47 @@ export default function App() {
                 </div>
               </div>
             </div>
-          </>
+          </div>
         )}
 
         {selectedPage === "prediction" && (
-          <div style={cardStyles}>
-            <h2 style={cardHeaderStyles}>PREDICTION</h2>
-            <div style={cardContentStyles}>
-              <button style={submitButtonStyles} onClick={handlePredictExpenses}>
-                Predict Next Month's Expenses
-              </button>
-              {prediction !== null && (
-                <p>
-                  Predicted Expense for next month: ₹
-                  {parseFloat(prediction).toFixed(2)}
-                </p>
-              )}
+          <div style={{ ...cardStyles, padding: "20px" }}>
+            <h2 style={{ ...cardHeaderStyles, textAlign: "center", marginBottom: "20px" }}>Expense Prediction</h2>
+
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
+              <div style={predictionCardStyles}>
+                <h3 style={{ color: "#4CAF50" }}>Next Month's Prediction</h3>
+                <button style={{ ...submitButtonStyles, margin: "10px 0" }} onClick={handlePredictExpenses}>
+                  Predict Next Month's Expenses
+                </button>
+                {prediction !== null ? (
+                  <p style={{ fontSize: "1.5rem", fontWeight: "bold", margin: "10px 0" }}>
+                    ₹ {parseFloat(prediction).toFixed(2)}
+                  </p>
+                ) : (
+                  <p style={{ color: "#888" }}>Click the button to get a prediction!</p>
+                )}
+              </div>
+
+              <div style={{ flex: 1, marginLeft: "20px" }}>
+                <img
+                  src="https://cdn.pixabay.com/photo/2013/07/12/14/28/chart-line-148256_1280.png"
+                  alt="Monthly Expense Trends Line Graph"
+                  style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                />
+              </div>
+            </div>
+
+            <div style={insightsCardStyles}>
+              <h3 style={{ color: "#4A5568" }}>Insights</h3>
+              <ul style={{ paddingLeft: "20px" }}>
+                <li>
+                  Monitor your spending trends to make informed financial decisions.
+                </li>
+                <li>
+                  Your predicted expense is based on past spending patterns. Plan accordingly.
+                </li>
+              </ul>
             </div>
           </div>
         )}
@@ -427,6 +504,24 @@ export default function App() {
   );
 }
 
+const predictionCardStyles = {
+  flex: "0 0 250px",
+  padding: "20px",
+  border: "1px solid #ddd",
+  borderRadius: "10px",
+  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+  textAlign: "center",
+};
+
+const insightsCardStyles = {
+  marginTop: "30px",
+  padding: "20px",
+  border: "1px solid #ddd",
+  borderRadius: "10px",
+  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+  backgroundColor: "#f9f9f9",
+};
+
 const layoutStyles = {
   display: "flex",
   height: "100vh",
@@ -515,4 +610,8 @@ const submitButtonStyles = {
   color: "#fff",
   fontWeight: "bold",
   cursor: "pointer",
+};
+
+const submitButtonHoverStyles = {
+  backgroundColor: "#45a049",
 };
